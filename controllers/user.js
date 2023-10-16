@@ -1,14 +1,16 @@
 const User = require('../models/user');
+const { errorHandler } = require('../helpers/dbErrorHandler');
 
 exports.signup = async (req, res) => {
+  let user = new User(req.body);
   try {
-    const user = new User(req.body);
-    await user.save();
+    user = await user.save();
+    user.salt = undefined;
+    user.hashed_password = undefined;
     res.json({ user });
   } catch (err) {
-    if (err.code === 11000 && err.keyPattern && err.keyValue) {
-      return res.status(400).json({ error: 'Email already exists' });
-    }
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(400).json({
+      err: errorHandler(err)
+    });
   }
 };
