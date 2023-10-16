@@ -2,7 +2,6 @@ const User = require('../models/user');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
 
 exports.signup = async (req, res) => {
   const errors = validationResult(req);
@@ -55,4 +54,19 @@ exports.signin = async (req, res) => {
 exports.signout = (req, res) => {
   res.clearCookie('token');
   res.json({message: 'Signout success'});
+};
+
+exports.requireSignin = (req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    req.auth = decoded;
+    next();
+  });
 };
