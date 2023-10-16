@@ -51,3 +51,8 @@ exports.signin = async (req, res) => {
     });
   }
 };
+
+exports.signout = (req, res) => {
+  res.clearCookie('token');
+  res.json({message: 'Signout success'});
+};
