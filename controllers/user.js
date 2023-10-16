@@ -1,72 +1,18 @@
 const User = require('../models/user');
-const { errorHandler } = require('../helpers/dbErrorHandler');
-const { validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
 
-exports.signup = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  let user = new User(req.body);
+exports.userById = async (req, res, next, id) => {
   try {
-    user = await user.save();
-    user.salt = undefined;
-    user.hashed_password = undefined;
-    res.json({ user });
-  } catch (err) {
-    res.status(400).json({
-      err: errorHandler(err)
-    });
-  }
-};
-
-exports.signin = async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-
+    const user = await User.findById(id).exec();
     if (!user) {
       return res.status(400).json({
-        err: 'User with that email does not exist. Please signup'
+        error: 'User not found'
       });
     }
-
-    if (!user.authenticate(password)) {
-      return res.status(401).json({
-        error: 'Email and password dont match'
-      });
-    }
-
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    res.cookie('token', token, { expire: new Date() + 9999 });
-    const { _id, name, role } = user;
-    return res.json({ token, user: { _id, email, name, role } });
+    req.profile = user;
+    next();
   } catch (err) {
-    return res.status(500).json({
-      err: 'Internal server error'
+    return res.status(400).json({
+      error: 'User not found'
     });
   }
-};
-
-exports.signout = (req, res) => {
-  res.clearCookie('token');
-  res.json({message: 'Signout success'});
-};
-
-exports.requireSignin = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-    req.auth = decoded;
-    next();
-  });
 };
