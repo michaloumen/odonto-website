@@ -8,20 +8,20 @@ const upload = multer({ storage: storage }).single('photo');
 
 exports.productById = (req, res, next, id) => {
   Product.findById(id)
-  .then((product) => {
-    if (!product) {
+    .then((product) => {
+      if (!product) {
+        return res.status(400).json({
+          error: 'Product not found'
+        });
+      }
+      req.product = product;
+      next();
+    })
+    .catch((err) => {
       return res.status(400).json({
-        error: 'Product not found'
+        error: 'Error while fetching the product'
       });
-    }
-    req.product = product;
-    next();
-  })
-  .catch((err) => {
-    return res.status(400).json({
-      error: 'Error while fetching the product'
     });
-  });
 };
 
 exports.read = (req, res) => {
@@ -122,4 +122,29 @@ exports.update = (req, res) => {
         });
       });
   });
+};
+
+// chamadas para diferentes tipo de ordenação para PRODUCT LIST ALL
+// http://localhost:8000/api/products?sortBy=sold&order=desc&limit=4
+// http://localhost:8000/api/products?sortBy=createdAt&order=desc&limit=4
+// http://localhost:8000/api/products?sortBy=createdAt&order=asc&limit=4
+exports.list = (req, res) => {
+  let order = req.query.order ? req.query.order : 'asc';
+  let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+  let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+
+  Product.find()
+    .select('-photo')
+    .populate('category')
+    .sort([[sortBy, order]])
+    .limit(limit)
+    .exec()
+    .then((products) => {
+      res.send(products);
+    })
+    .catch((err) => {
+      return res.status(400).json({
+        error: 'Products not found'
+      });
+    });
 };

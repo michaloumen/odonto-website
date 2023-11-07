@@ -27,6 +27,11 @@ const productSchema = new mongoose.Schema({
   quantity: {
     type: Number
   },
+  sold: {
+    type: Number,
+    default: 0
+  },
+  // quantos já foram vendidos - não sei se vou usar isso
   photo: {
     data: Buffer,
     contentType: String

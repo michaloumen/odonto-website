@@ -21,3 +21,6 @@ No padrão de arquitetura MVC (model-view-controller) o middleware geralmente re
 Porém, dependendo da complexidade do aplicativo, o middleware também pode ser organizado em sua própria camada separada 
 
 Criei um middleware productById para ficar mais fácil encontrar um único produto e atualizar ou deletar. E assim também precisa criar uma rota para poder fazer isso.
+
+Enviando produtos como queries 
+Agora temos todos os middlewares e rotas de produto, mas como vamos retornar o produto para o frontEnd? Precisamos de um jeito flexível de retornar. Temos que retornar pensando em SELL e ARRIVAL. Essa é uma feature importante de qualquer aplicação ecommerce. Então os produtos mais vendidos vão ser retornados para o frontEnd como uma lista de mais populares. E alguns produtos são novos, acabaram de chegar (ARRIVAL) - e essa pode ser uma forma de exibir os produtos também, os mais novos. 
