@@ -82,3 +82,44 @@ exports.remove = (req, res) => {
       });
     });
 };
+
+exports.update = (req, res) => {
+  upload(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({
+        error: 'Image could not be uploaded'
+      });
+    }
+
+    const fields = req.body;
+    const { name, description, price, category, quantity } = fields;
+    if (!name || !description || !price || !category || !quantity) {
+      return res.status(400).json({
+        error: 'All fields are required',
+      });
+    }
+
+    const product = req.product;
+    Object.assign(product, fields);
+
+    if (req.file) {
+      if (req.file.size > 1000000) {
+        return res.status(400).json({
+          error: 'Image should be less than 1mb in size',
+        });
+      }
+      product.photo.data = req.file.buffer;
+      product.photo.contentType = req.file.mimetype;
+    }
+
+    product.save()
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((err) => {
+        res.status(400).json({
+          error: errorHandler(err)
+        });
+      });
+  });
+};
