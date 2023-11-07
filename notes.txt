@@ -1,0 +1,23 @@
+agora estou criando validações para cadastrar um produto 
+- Image should be less than 1mb in size
+- se não mandar algum dos campos preenchidos
+
+PRECISO DE VALIDAÇÃO PARA PRODUCTS REPETIDOS (ex: não pode ter o mesmo nome)
+
+O que é middleware? 
+O middleware é como o garçom de um restaurante. Quando faço um pedido, o garçom leva esse pedido até a cozinha (que seria o servidor). A cozinha prepara o pedido e o garçom trás o prato até você (que seria o cliente). No mundo da tecnologia, o middleware atua como ponte entre diferentes sistemas, permitindo que eles se comuniquem e compartilhem informações. Ele pode ajudar a processar solicitações, enviar respostas, conectar diferentes tipos de software e muito mais. 
+
+EX: middleware do userById (controllers/user.js)
+1. Recebendo o pedido: quando uma solicitação chega com o ID de usuário, o middleware é acionado. O ID do usuário é passado como parâmetro
+2. Levando o pedido para a cozinha: O middleware leva esse ID de usuário e faz uma consulta ao banco de dados (a cozinha) para encontrar o usuário correspondente usando User.findById(id).exec()
+3. Verificando se o pedido pode ser atendido: Se o usuário não for encontrado (if (!user)), o middleware retorna um erro para o cliente, informando que o 'pedido' não pode ser atendido porque o usuário não foi encontrado 
+4. Entregando o pedido ao cliente: Se o usuário for encontrado, o middleware adiciona o usuário à solicitação (req.profile = user) e passa o controle para o próximo middleware na linha (next()). Isso é semelhante ao garçom entregando o prato ao cliente 
+5. Lidando com erros: Se ocorrer algum erro durante a busca do usuário no banco de dados (se o banco, por exemplo, não tiver acessível), o middleware captura esse erro e envia uma resposta de erro para o cliente
+
+No padrão de arquitetura MVC (model-view-controller) o middleware geralmente reside na camada de controller. Aqui está o porque: 
+- Model: esta camada lida com os dados e lógica de negócios. Ela interage com o banco de dados e realiza operações como buscar, inserir e atualizar dados
+- View: esta é a camada de apresentação que lida com a interface do usuário. Exibe os dados ao usuário e também coleta a entrada do usuário 
+- Controller: Esta camada atua como um intermediário entre a Model e a View. Ela processa as solicitações do usuário, interafge com a Model para buscar/atualizar os dados e, em seguida, envia os dados para a View para serem exibidos. O middleware, como o userById, se encaixa aqui porque ele está processando a solicitação do usuário (o ID do usuário, neste caso) e interagindo com a Model (para buscar o usuário do banco de dados) 
+Porém, dependendo da complexidade do aplicativo, o middleware também pode ser organizado em sua própria camada separada 
+
+Criei um middleware productById para ficar mais fácil encontrar um único produto e atualizar ou deletar. E assim também precisa criar uma rota para poder fazer isso.
