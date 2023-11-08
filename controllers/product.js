@@ -165,3 +165,22 @@ exports.listRelated = (req, res) => {
       });
     });
 };
+
+// essa chamada não tá funcionando. Não retorna nada, nem erro
+// Acho que é porque não tem nenhuma coisa pra consultar desse tipo no banco
+// http://localhost:8000/api/products/categories
+exports.listCategories = (req, res) => {
+  console.log("listCategories controller called");
+
+  Product.distinct('category', {}, (err, categories) => {
+    if (err) {
+      console.log("Error retrieving categories:", err);
+      return res.status(400).json({
+        error: 'An error occurred while fetching categories'
+      });
+    }
+    console.log("Categories retrieved:", categories);
+    res.json(categories);
+  });
+};
+
