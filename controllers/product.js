@@ -176,7 +176,7 @@ exports.listCategories = (req, res) => {
     if (err) {
       console.log("Error retrieving categories:", err);
       return res.status(400).json({
-        error: 'An error occurred while fetching categories'
+        error: 'Categories not found'
       });
     }
     console.log("Categories retrieved:", categories);
@@ -184,3 +184,42 @@ exports.listCategories = (req, res) => {
   });
 };
 
+exports.listBySearch = async (req, res) => {
+  try {
+    const order = req.body.order ? req.body.order : "desc";
+    const sortBy = req.body.sortBy ? req.body.sortBy : "_id";
+    const limit = req.body.limit ? parseInt(req.body.limit) : 100;
+    const skip = parseInt(req.body.skip);
+    const findArgs = {};
+
+    for (const key in req.body.filters) {
+      if (req.body.filters[key].length > 0) {
+        if (key === "price") {
+          findArgs[key] = {
+            $gte: req.body.filters[key][0],
+            $lte: req.body.filters[key][1]
+          };
+        } else {
+          findArgs[key] = req.body.filters[key];
+        }
+      }
+    }
+
+    const data = await Product.find(findArgs)
+      .select("-photo")
+      .populate("category")
+      .sort([[sortBy, order]])
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    res.json({
+      size: data.length,
+      data
+    });
+  } catch (err) {
+    res.status(400).json({
+      error: 'Products not found'
+    });
+  }
+};
