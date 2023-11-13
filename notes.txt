@@ -24,3 +24,29 @@ Criei um middleware productById para ficar mais fácil encontrar um único produ
 
 Enviando produtos como queries 
 Agora temos todos os middlewares e rotas de produto, mas como vamos retornar o produto para o frontEnd? Precisamos de um jeito flexível de retornar. Temos que retornar pensando em SELL e ARRIVAL. Essa é uma feature importante de qualquer aplicação ecommerce. Então os produtos mais vendidos vão ser retornados para o frontEnd como uma lista de mais populares. E alguns produtos são novos, acabaram de chegar (ARRIVAL) - e essa pode ser uma forma de exibir os produtos também, os mais novos. 
+--------------------------------------------------------------------
+HOOKS 
+O state é um hook --> useState e useEffect 
+
+Nós precisávamos usar class components pelos seguintes motivos: 
+- para persistir dado no estado 
+- para usar metodos de lifecycle
+- para passar props para as classes de componentes funcionais 
+Mas com os hooks, pode fazer tudo sem usar class components 
+
+O state é pra mudar o estado 
+o useEffect é pra não precisar mais escrever metodos de lifecycle
+
+UseEffect é como uma instrução para o React fazer algo extra depois que seu componente é mostrando na tela. Se colocar uma coisa dentro do array, é pra executar o useEffect somente quando aquilo que está no array mudar. 
+
+useEffect(() => {
+  // Este código é executado sempre que o componente é mostrado ou atualizado
+});
+
+useEffect(() => {
+  // Este código é executado uma vez quando o componente é mostrado
+}, []);
+
+useEffect(() => {
+  // Este código é executado quando 'valor' muda
+}, [valor]);
