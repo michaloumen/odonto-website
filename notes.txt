@@ -50,3 +50,42 @@ useEffect(() => {
 useEffect(() => {
   // Este código é executado quando 'valor' muda
 }, [valor]);
+
+No React.js a renderização do lado do servidor, também conhecida como server-side-rendering (SSR), é uma técnica em que a renderização inicial da interface do usuário ocorre no servidor antes de ser enviada para o navegador. Isso é contrastado com a abordagem mais comum, chamada de client-side-rendering (CSR), onde a renderização acontece no navegador. A SSR tem implicações positivas para mecanismos de busca, como o Google, por alguns motivos: 
+  1. SEO (Otimização para mecanismos de busca): Os motores de buscar, incluindo Google, consegue indexar o conteúdo renderizado no servidor com mais facilidade do que o conteúdo gerado dinamicamente no navegador. Isso melhora a capacidade do mecanismo de busca entender e indexar o conteúdo da sua aplicação 
+  2. Desempenho inicial: 
+    - Tempo de carregamento inicial: Com a SSR, o HTML é gerado no servidor e enviado ao nagevador, o que pode resultar em um tempo de carregamento inicial mais rápido, especialmente em dispositivos com largura de banda limitada ou em conexões mais lentas 
+    - Conteúdo visível mais rápido: O conteúdo visível pode ser enviado diretamente ao navegador, permitindo uma visualização mais rápida para o usuário enquanto outros scripts e recursos estão sendo carregados 
+  3. Compatibilidade com redes sociais e scrapers 
+    - Pré visualização em redes sociais: Muitas redes sociais e plataformas de compartilhamento de links dependem de rastreadores que analisam o HTML da página. SSR facilita a criação de pré-visualizações ricas e preciosas
+    - Melhor interação com Bots de mecanismos de busca: bots de mecanismos de busca têm uma experiencia mais eficiente e completa ao rastrear o conteúdo SSR
+
+Desvantagem: Aumento na carga do servidor devido à renderização. É importate analisar caso a caso e ver qual a melhor opção
+
+Quando instala o React, coisas que podem ser removidas: 
+- App.css 
+- App.test.js
+- index.css
+- logo.svg
+- serviceWorker.js
+(Pode ficar só com o App.js e index.js)
+
+O App.js fica assim 
+const App = () => (<div>Oi</div>);
+
+export default App;
+
+index.js assim 
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+
+
